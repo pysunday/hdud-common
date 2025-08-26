@@ -1,0 +1,48 @@
+---
+import clsx from 'clsx';
+
+const langMap = {
+  zh: '简体中文',
+  'zh-hant': '繁體中文',
+  en: 'English',
+  ar: 'عربي',
+  de: 'Deutsch',
+  ko: '한국인',
+  ru: 'Русский',
+  fr: 'Français',
+  es: 'Español',
+  ja: '日本語',
+}
+const {
+  class: className,
+  langs = Object.keys(langMap),
+  locale = Astro.currentLocale
+} = Astro.props;
+const menus = langs.map((name) => ({
+  name,
+  label: langMap[name],
+  disabled: locale === name,
+  path: name === 'zh' ? '' : `/${name}`
+}))
+---
+<div class:list={["dropdown dropdown-center", className]}>
+  <button tabindex="0" role="button" class="flex m-1 text-2xl">
+    <span class="icon-[material-symbols--translate]" />
+  </button>
+  <ul tabindex="0" class="dropdown-content menu bg-[#333333] rounded-box z-1 w-max p-2 shadow-sm">
+    {
+      menus.map(it => {
+        const re = new RegExp(`^\/(zh-hant|${Object.keys(langMap).join('|')})\/`)
+        const pathname = it.name === locale
+          ? 'javascrpt:null'
+          : `${it.path}${Astro.url.pathname.replace(re, '/')}`;
+        return <a href={pathname} class={clsx(
+          "p-2",
+          it.name === locale ? 'text-green-600' : 'text-[#fafafa] hover:text-[#cccccc]'
+        )}>
+          {it.label}
+        </a>
+      })
+    }
+  </ul>
+</div>

@@ -1,0 +1,92 @@
+---
+const alpineData = (() => ({
+  leftEye: '',
+  rightEye: '',
+  leftEyebrow: '',
+  rightEyebrow: '',
+
+  init() {
+    setInterval(() => {
+      this.leftEye = 'scale(0.6)';
+      this.rightEye = 'scale(0.6)';
+      setTimeout(() => {
+        this.leftEye = '';
+        this.rightEye = '';
+      }, 300);
+    }, 4000);
+  },
+
+  setEyebrow(type) {
+    if (type === 'enter') {
+      this.leftEyebrow = 'rotate(15deg)';
+      this.rightEyebrow = 'rotate(-15deg)';
+    } else {
+      this.leftEyebrow = '';
+      this.rightEyebrow = '';
+    }
+  }
+})).toString();
+---
+<div 
+  x-data={alpineData} 
+  x-init="init()" 
+  @mouseenter="setEyebrow('enter')" 
+  @mouseleave="setEyebrow('leave')"
+  class="w-full h-full flex justify-center items-center"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="50 0 250 400"
+    width="150px"
+    height="150px"
+    class="w-full h-full"
+  >
+    <g class="stroke-black stroke-[5]">
+      <path fill="#fff" d="M150 80 H200 L250 100 L270 150 L240 300 L200 320 H150 L110 300 L80 150 L100 100 L150 80 Z" />
+      <path
+        fill="#000"
+        d="M90 140 L140 160 L140 130 L190 160 L185 135 L240 155
+          L220 120 L270 150 L250 100 L200 80 L150 80 L100 100 L90 140Z"
+      />
+      <path fill="#fff" d="M85 190 H66 L73 240 L100 250 Z" />
+      <path fill="#fff" d="M265 190 H284 L277 240 L250 250 Z" />
+      <path fill="#fff" d="M115 182 H160 V220 H115Z" />
+      <path fill="#fff" d="M190 182 H235 V220 H190Z" />
+      <path d="M160 200 H190" />
+      <path d="M115 200 L85 190" />
+      <path d="M235 200 L265 190" />
+
+      <!-- 眉毛 -->
+      <path 
+        class="left-eyebrow line" 
+        d="M120 170 H150 Z" 
+        :style="{ 'transform-origin': '150px 170px', transform: leftEyebrow }" 
+      />
+      <path 
+        class="right-eyebrow line" 
+        d="M200 170 H230 Z" 
+        :style="{ 'transform-origin': '200px 170px', transform: rightEyebrow }" 
+      />
+
+      <!-- 眼睛 -->
+      <circle 
+        class="left-eye" 
+        cx="135" cy="200" r="10" fill="#000" 
+        :style="{ 'transform-origin': '135px 200px', transform: leftEye }" 
+      />
+      <circle 
+        class="right-eye" 
+        cx="215" cy="200" r="10" fill="#000" 
+        :style="{ 'transform-origin': '215px 200px', transform: rightEye }" 
+      />
+
+      <path d="M160 250 H190" />
+      <path d="M150 290 L200 285 Z" />
+      <path d="M135 330 L50 350" />
+      <path d="M215 330 L300 350" />
+      <path fill="#fff" d="M120 335 C 200 390 200 390 230 335" />
+      <path d="M130 310 L140 350" />
+      <path d="M220 310 L210 350" />
+    </g>
+  </svg>
+</div>

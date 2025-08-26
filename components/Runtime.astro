@@ -1,0 +1,79 @@
+---
+// 运行时间面板
+const alpineData = ((props) => {
+  const addZero = val => val < 10 ? `0${val}` : val;
+  return {
+    runTime: new Date() - new Date(props.startTime),
+    timeData: { days: 0, hours: 0, minutes: 0, seconds: 0 },
+    labels: props.shows,
+    start() {
+      this.updateTime();
+      setInterval(() => {
+        this.runTime += 1000;
+        this.updateTime();
+      }, 1000);
+    },
+    updateTime() {
+      this.timeData.days = Math.floor(this.runTime / (1000 * 60 * 60 * 24));
+      this.timeData.hours = addZero(Math.floor((this.runTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+      this.timeData.minutes = addZero(Math.floor((this.runTime % (1000 * 60 * 60)) / (1000 * 60)));
+      this.timeData.seconds = addZero(Math.floor((this.runTime % (1000 * 60)) / 1000));
+    }
+  }
+}).toString();
+---
+
+<div 
+  x-data={`(${alpineData})(${JSON.stringify(Astro.props)})`}
+  x-init="start()"
+  class="text-center py-8 sm:py-10 md:py-12 xl:py-16 bg-transparent"
+>
+  <h1 class="text-cyan text-3xl sm:text-4xl md:text-5xl tracking-widest mb-8 sm:mb-10 md:mb-12 xl:mb-16 text-shadow-[0_0_10px_#00e6e6,0_0_20px_#00e6e6]">
+    {Astro.props.shows.title}
+  </h1>
+
+  <div class="flex justify-around">
+    <template x-for="key in ['days', 'hours', 'minutes', 'seconds']" :key="key">
+      <div class="time-section mx-4 text-center">
+        <span 
+          class="text-2xl sm:text-3xl md:text-5xl text-cyan mb-1 block transition-transform duration-300 ease-in-out hover:scale-125 animate-neon-flicker text-shadow-[0_0_15px_#00ffff,0_0_30px_#00ffff] hover:text-shadow-[0_0_30px_#00ffff,0_0_60px_#00ffff]" 
+          x-text="timeData[key]"
+        ></span>
+        <span 
+          class="text-cyan text-sm sm:text-md md:text-xl tracking-wide animate-neon-flicker" 
+          x-text="labels[key]"
+        ></span>
+      </div>
+    </template>
+  </div>
+</div>
+
+<style>
+@import 'tailwindcss';
+@theme runtime {
+  --color-cyan: #ffffff;
+  --color-pink: #ff0066;
+  --shadow-neon: 0 0 30px rgba(255, 255, 255, 0.6);
+  --animate-neon-flicker: neon-flicker 1.5s infinite;
+  @keyframes neon-flicker {
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+      text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff;
+    }
+    20%,
+    24%,
+    55% {
+      text-shadow: none;
+    }
+  }
+}
+.animate-neon-flicker {
+  animation: neon-flicker 1.5s infinite;
+}
+</style>

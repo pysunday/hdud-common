@@ -1,0 +1,31 @@
+---
+const { class: className, shows } = Astro.props;
+const alpineData = ((shows) => ({
+  date: '',
+  time: '',
+  day: '',
+  start() {
+    const updateClock = () => {
+      const now = new Date();
+      const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].map(key => shows[key])
+      this.day = daysOfWeek[now.getDay()];
+      this.date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      this.time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    };
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+})).toString();
+---
+<div 
+  x-data={`(${alpineData})(${JSON.stringify(shows)})`}
+  x-init="start()" 
+  class:list={[
+    "hover:text-purple-500 dark:hover:text-[turquoise] dark:text-[#fafaf6] text-[#888] font-handjet flex flex-col items-center justify-center py-8 overflow-hidden",
+    className
+  ]}
+>
+  <p class="mx-auto text-[1.8em] tracking-[0.3em] font-light" x-text="date"></p>
+  <p class="mx-auto text-[4em] tracking-[0.2em] font-light" x-text="time"></p>
+  <p class="mx-auto text-[1.7em] uppercase tracking-[0.4em] font-light" x-text="day"></p>
+</div>

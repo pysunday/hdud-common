@@ -1,0 +1,64 @@
+---
+const { btns, isShowText = true, class: className } = Astro.props;
+
+const alpineData = ((btns, isShowText) => ({
+  btns,
+  isShowText,
+  openCfg: {},
+  toggle(name) {
+    this.openCfg[name] = !this.openCfg[name];
+  },
+})).toString();
+---
+
+<div
+  x-data={`(${alpineData})(${JSON.stringify(btns)}, ${isShowText})`}
+  class:list={["flex gap-2 flex-wrap max-sm:flex-col", className]}
+>
+  <template x-for="cfg in btns" :key="cfg.key">
+    <div>
+      <!-- season 按钮 -->
+      <template x-if="cfg.type === 'season'">
+        <button
+          type="button"
+          @click="window.btnHandlers?.[cfg.key]?.()"
+          class="btn btn-ghost flex flex-col items-center px-2 leading-8"
+        >
+          <span :class="cfg.iconify" class="w-[clamp(1.5rem,4vw,2.2rem)] h-10"></span>
+          <span x-show="isShowText" x-text="cfg.name"></span>
+        </button>
+      </template>
+
+      <!-- link 链接 -->
+      <template x-if="cfg.type === 'link'">
+        <a
+          :href="cfg.url"
+          target="_blank"
+          class="btn btn-ghost flex flex-col items-center px-2 leading-8"
+        >
+          <span :class="cfg.iconify" class="w-[clamp(1.5rem,4vw,2.2rem)] h-10"></span>
+          <span x-show="isShowText" x-text="cfg.name"></span>
+        </a>
+      </template>
+
+      <!-- qr 悬浮卡片（用 daisyUI dropdown-hover 实现 HoverCard） -->
+      <template x-if="cfg.type === 'qr'">
+        <div class="dropdown dropdown-hover dropdown-end sm:dropdown-center">
+          <div tabindex="0" role="button" class="btn btn-ghost flex flex-col items-center px-2 leading-8">
+            <span :class="cfg.iconify" class="w-[clamp(1.5rem,4vw,2.2rem)] h-10"></span>
+            <span x-show="isShowText" x-text="cfg.name"></span>
+          </div>
+          <div tabindex="0" class="dropdown-content z-[1] card card-compact w-max p-2 shadow bg-base-100 gap-1">
+            <p class="text-[10px] w-[100px]" x-text="cfg.tip"></p>
+            <img :src="cfg.url" alt="" class="w-[100px] h-[100px]" />
+          </div>
+        </div>
+      </template>
+
+      <!-- 兜底 -->
+      <template x-if="!['season','link','qr'].includes(cfg.type)">
+        <div>按钮类型不正确</div>
+      </template>
+    </div>
+  </template>
+</div>

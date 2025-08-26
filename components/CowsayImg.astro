@@ -1,0 +1,55 @@
+---
+const alpineData = (props => {
+  const {
+    classNames = {},
+    value = window.cowsay_random(),
+    maxHeight = 240,
+  } = props;
+  return {
+    classNames,
+    data: value,
+    h: maxHeight,
+    scale: 1,
+    randomize() {
+      this.data = window.cowsay_random();
+      this.$nextTick(() => this.updateWidth());
+    },
+    updateWidth() {
+      this.scale = 1
+      this.h = maxHeight
+      this.$nextTick(() => {
+        const content = this.$refs.content
+        if (!content) return
+        const wrapWidth = content.parentElement.clientWidth
+        const wrapHeight = maxHeight
+        const contentWidth = content.scrollWidth
+        const contentHeight = content.scrollHeight
+        const newScale = Math.min(wrapWidth / contentWidth, wrapHeight / contentHeight)
+        this.scale = newScale
+        if (contentWidth > contentHeight) {
+          this.h = contentHeight * newScale
+        }
+      })
+    }
+  }
+}).toString();
+---
+
+
+<div 
+  x-data={`(${alpineData})(${JSON.stringify(Astro.props)})`}
+  x-init="updateWidth()"
+  x-on:resize.window="updateWidth()"
+  class="flex justify-center items-center h-full sm:min-w-[400px] self-center"
+  :class="`${classNames.base} ${scale > 1 ? classNames.up : classNames.down}`"
+  :style="`height:${h}px`"
+>
+  <pre
+    x-ref="content"
+    class="transition-all duration-500 whitespace-pre h-min leading-tight font-mono text-sm hover:text-[turquoise] cursor-pointer select-none min-w-max"
+    x-text="data.value"
+    @click="randomize()"
+    :style="`scale:${scale}; font-weight:${scale > 1 ? 400 : 900}`"
+  />
+</div>
+

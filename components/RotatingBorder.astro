@@ -1,0 +1,48 @@
+---
+// 头像外部转圈动画
+import clsx from 'clsx';
+const {
+  size,
+  speed = 3,
+  borderWidth = 2,
+  class: className = ""
+} = Astro.props;
+---
+
+<style is:global>
+  @property --border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+  @keyframes rotate {
+    to {
+      --border-angle: 360deg;
+    }
+  }
+  .animate-rotate-border {
+    animation: rotate linear infinite;
+  }
+</style>
+
+<div
+  class="relative aspect-square h-4/5 inline-block rounded-full flex items-center justify-center"
+  style={size ? { width: `${size}px`, height: `${size}px` } : null}
+>
+  <div
+    class={clsx(
+      "absolute z-0 inset-0 h-full w-full rounded-full",
+      "animate-rotate-border bg-conic/[from_var(--border-angle)]",
+      "from-transparent to-riptide-500 dark:from-transparent dark:to-blue-300",
+      className
+    )}
+    style={{
+      animationDuration: `${speed}s`,
+      scale: `${100 + borderWidth}%`,
+    }}
+  />
+  <div class="absolute z-1 w-full h-full rounded-full">
+    <slot />
+  </div>
+</div>
+

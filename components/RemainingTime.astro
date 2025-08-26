@@ -1,0 +1,113 @@
+---
+const { className = "", shows } = Astro.props;
+const alpineData = ((shows) => {
+  function render(template, data) {
+    return template.replace(/\{\{(.*?)\}\}/g, (_, key) => data[key.trim()] ?? '');
+  }
+  return {
+    time: new Date(),
+    timer: null,
+    progressList: [],
+
+    init() {
+      this.update();
+      this.timer = setInterval(() => this.update(), 1000);
+    },
+
+    update() {
+      this.time = new Date();
+
+      // 年、月、周、日结束时间
+      const yearEnd = new Date(this.time.getFullYear(), 11, 31, 23, 59, 59);
+      const monthEnd = new Date(this.time.getFullYear(), this.time.getMonth() + 1, 0);
+      const dayEnd = new Date(this.time.getFullYear(), this.time.getMonth(), this.time.getDate(), 23, 59, 59);
+      const dayStart = new Date(this.time.getFullYear(), this.time.getMonth(), this.time.getDate(), 0, 0, 0);
+      const weekEnd = new Date(this.time);
+      weekEnd.setDate(this.time.getDate() + (7 - (this.time.getDay() || 7)));
+
+      // 剩余时间计算
+      const getDaysLeft = (end) =>
+        Math.ceil((end.getTime() - this.time.getTime()) / (1000 * 60 * 60 * 24));
+
+      // 今日剩余时间
+      const diff = Math.max(0, dayEnd.getTime() - this.time.getTime());
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const dayProgress = 100 - (diff / (dayEnd.getTime() - dayStart.getTime())) * 100;
+
+      const leftYearDay = getDaysLeft(yearEnd);
+      const leftMonthDay = getDaysLeft(monthEnd);
+      const leftWeekDay = getDaysLeft(weekEnd);
+
+      const getDaysInCurrentYear = () => {
+        const year = this.time.getFullYear();
+        const start = new Date(year, 0, 1);
+        const end = new Date(year + 1, 0, 1);
+        return (end - start) / (1000 * 60 * 60 * 24);
+      };
+
+      // 固定春节表
+      const springFestivalDates = [
+        { year: 2025, date: '2025-01-29' },
+        { year: 2026, date: '2026-02-17' },
+        { year: 2027, date: '2027-02-06' },
+      ];
+      const next = springFestivalDates.find(({ date }) => new Date(date) > this.time);
+      const chineseNewYear = next ? new Date(next.date) : new Date('2026-02-17');
+      const leftNewyearDay = getDaysLeft(chineseNewYear);
+
+      const totalDays = getDaysInCurrentYear();
+
+      this.progressList = [
+        {
+          key: 'day',
+          prog: Math.ceil(dayProgress),
+          text: render(shows.today, { hours, minutes, seconds: `${seconds < 10 ? '0' : ''}${seconds}` }),
+        },
+        { 
+          key: 'week',
+          prog: Math.ceil((7 - leftWeekDay) / 7 * 100),
+          text: render(shows.week, { days: leftWeekDay }),
+        },
+        {
+          key: 'month',
+          prog: Math.ceil(100 - leftMonthDay / monthEnd.getDate() * 100),
+          text: render(shows.month, { days: leftMonthDay }),
+        },
+        {
+          key: 'year',
+          prog: Math.ceil(100 - leftYearDay / getDaysInCurrentYear() * 100),
+          text: render(shows.year, { days: leftYearDay }),
+        },
+        {
+          key: 'newyear',
+          prog: Math.ceil((totalDays - leftNewyearDay) / totalDays * 100),
+          text: render(shows.newyear, { days: leftNewyearDay }),
+        },
+      ];
+    }
+  }
+}).toString();
+---
+
+<div 
+  x-data={`(${alpineData})(${JSON.stringify(shows)})`}
+  x-init="init()" 
+  class={`${className}`}
+>
+  <!-- 遍历进度条 -->
+  <template x-for="item in progressList" :key="item.key">
+    <div>
+      <div class="flex justify-between shadow-[0_-1px_0px_0px_rgba(0,0,0,0.1)] pt-2">
+        <span x-text="item.text" class="truncate"></span>
+        <span x-text="item.prog + '%'"></span>
+      </div>
+      <progress 
+        class="progress w-full my-1" 
+        :value="item.prog" 
+        max="100"
+      ></progress>
+    </div>
+  </template>
+</div>
