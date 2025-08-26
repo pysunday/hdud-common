@@ -5,10 +5,11 @@
   "scripts": {
     "release": "release-it"
   },
-  "github": false,
-  "npm": {
-    "publish": true
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pysunday/hdud-common"
   },
+  "homepage": "https://github.com/pysunday/hdud-common",
   "keywords": [
     "hdud",
     "astro",

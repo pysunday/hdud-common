@@ -1,13 +1,12 @@
 ui组件库：https://daisyui.com/
+
 框架：https://alpinejs.dev/
 
+iconify: https://icon-sets.iconify.design/?query=
 
-# iconify
+# icon调用方式
 
-https://icon-sets.iconify.design/?query=
-
-
-# react
+## react
 
 ```bash
 npm install @iconify-json/mdi @iconify/react
@@ -21,7 +20,7 @@ import homeIcon from '@iconify-json/mdi/icons/home.json';
 <Icon icon={homeIcon} />
 ```
 
-# astro
+## astro
 
 ```bash
 npx astro add astro-icon
@@ -33,7 +32,7 @@ import { Icon } from 'astro-icon/components'
 <Icon name="mdi:home" />
 ```
 
-# tailwind
+## tailwind
 
 ```bash
 npm i -D @iconify/tailwind @iconify-json/mdi
@@ -46,3 +45,4 @@ npm i -D @iconify/tailwind @iconify-json/mdi
 ```html
 <span class="icon-[mdi-light--home]"></span>
 ```
+
