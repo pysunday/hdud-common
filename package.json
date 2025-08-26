@@ -21,7 +21,8 @@
     "layouts",
     "libs",
     "pages",
-    "package.json"
+    "package.json",
+    "styles"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
