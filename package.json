@@ -33,13 +33,13 @@
   "devDependencies": {
     "@release-it/conventional-changelog": "^8.0.1",
     "daisyui": "^5.0.50",
-    "node-emoji": "^2.2.0",
     "release-it": "^17.0.1"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
+    "node-emoji": "^2.2.0",
     "@heroui/button": "^2.2.24",
     "@heroui/dropdown": "^2.3.24",
     "@iconify/tailwind4": "^1.0.6",

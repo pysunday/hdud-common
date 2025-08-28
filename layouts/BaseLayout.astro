@@ -14,12 +14,12 @@ const {
 	ogArticle = {},
 	ogImage,
 	hasCursor = true,
-	shortTitle = 'HDUD',
+	shortTitle,
 	class: className,
 } = Astro.props;
 const seoConfig = {
   title,
-  titleTemplate: `%s - ${shortTitle}`,
+  titleTemplate: `%s${shortTitle ? ' - ' + shortTitle : ''}`,
   titleDefault: shortTitle,
   description,
   charset: "UTF-8",

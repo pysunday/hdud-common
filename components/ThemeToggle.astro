@@ -4,6 +4,7 @@ const themes = {
   dark: 'dark',
   ...(Astro.props.themes || {})
 };
+const { class: className } = Astro.props;
 
 // 主题切换
 const alpineData = ((themes) => {
@@ -28,17 +29,18 @@ const alpineData = ((themes) => {
 }).toString();
 ---
 
-<div 
+<button 
   x-data={`(${alpineData})(${JSON.stringify(themes)})`}
   x-init="start()"
+  class="flex"
 >
-  <label class="swap swap-rotate cursor-pointer">
+  <label class:list={["swap swap-rotate cursor-pointer", className]}>
     <input type="checkbox" x-model="isDark" class="theme-controller" />
 
-    <span class="swap-on size-8 fill-current icon-[flowbite--sun-outline]" />
-    <span class="swap-off size-8 fill-current icon-[line-md--moon]" />
+    <span class="swap-on size-5 xl:size-6 fill-current icon-[flowbite--sun-outline]" />
+    <span class="swap-off size-5 xl:size-6 fill-current icon-[line-md--moon]" />
   </label>
-</div>
+</button>
 
 <script is:inline define:vars={{ themes }}>
 	const getThemePreference = () => {
