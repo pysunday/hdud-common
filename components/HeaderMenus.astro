@@ -8,13 +8,19 @@ const { menus, pathname, type } = Astro.props;
     const isActive = link.isActive(pathname);
     return (
       <li class:list={[{
-        'text-[#aaa]': !isActive,
-        'text-[#333]': isActive,
-        'dark:text-[#eee]': isActive,
-      }, 'hover:text-[#333] dark:hover:text-[#eee]']}>
+        'text-[#aaa] hover:text-[#333] dark:hover:text-[#eee]': !isActive,
+        'text-[#333] dark:text-[#eee] menu-active': isActive,
+      }]}>
         <a
           href={isActive ? 'javascript:null' : link.href}
-          class="md:text-md lg:text-lg md:px-2 lg:px-3"
+          class:list={[
+            type === 'small'
+              ? "text-xl"
+              : "md:text-md lg:text-lg md:px-2 lg:px-3",
+            {
+              'hover:bg-[unset]': isActive,
+            }
+          ]}
           astro-prefetch="true"
         >
           {link.icon && <span
